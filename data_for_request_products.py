@@ -111,4 +111,3 @@ params = {
     'itemId': '19000165299',
     'cityId': '5ffc7a97-fd25-464b-8bdb-2b87c6261881',
 }
-

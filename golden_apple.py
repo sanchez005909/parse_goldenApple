@@ -1,5 +1,6 @@
 import csv
 import re
+import time
 from math import ceil
 import tqdm
 import requests
@@ -23,9 +24,14 @@ class GoldenAppleParse:
             headers=headers,
             json=json
         )
-        if response.status_code == 200:
-            return response.json()
-        return response.status_code
+        while True:
+            try:
+                if response.status_code == 200:
+                    return response.json()
+                return response.status_code
+            except requests.exceptions.ConnectionError:
+                print('Проблема с соединением')
+                time.sleep(1)
 
     def gather_data(self):
         """
@@ -42,7 +48,6 @@ class GoldenAppleParse:
         # получить остальные продукты
         for page in tqdm.tqdm(range(2, 3 + 1)):
             products += self.get_page_data(page)['data']['products']
-
         return products
 
     @staticmethod
@@ -58,9 +63,14 @@ class GoldenAppleParse:
                                 params=param,
                                 cookies=cookies,
                                 headers=headers)
-        if response.status_code == 200:
-            return response.json()['data']
-        return response.status_code
+        while True:
+            try:
+                if response.status_code == 200:
+                    return response.json()['data']
+                return response.status_code
+            except requests.exceptions.ConnectionError:
+                print('Проблема с соединением')
+                time.sleep(1)
 
     def get_data_product(self, lst_products: list):
         """
@@ -71,7 +81,6 @@ class GoldenAppleParse:
         products = []
         for product in tqdm.tqdm(lst_products):
             card = self.get_product_card(product['itemId'])
-            # print(card)
             item = {
                 'url': f'https://goldapple.ru/{product["url"]}',
                 'name': card["name"],
@@ -112,7 +121,7 @@ class GoldenAppleParse:
                                     dialect='unix')
             writer.writeheader()
             writer.writerows(items)
-            return True
+        return True
 
     @staticmethod
     def clean_text(text: str):
