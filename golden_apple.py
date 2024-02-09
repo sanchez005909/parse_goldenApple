@@ -46,7 +46,7 @@ class GoldenAppleParse:
         # Получить количество страниц
         pages = ceil(response['count'] / count_products_on_page)
         # получить остальные продукты
-        for page in tqdm.tqdm(range(2, 3 + 1)):
+        for page in tqdm.tqdm(range(2, pages + 1)):
             products += self.get_page_data(page)['data']['products']
         return products
 
