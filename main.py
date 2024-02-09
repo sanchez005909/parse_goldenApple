@@ -1,13 +1,16 @@
-from functions import gather_data, get_data_product, write_to_csv
+from golden_apple import GoldenAppleParse
+from data_for_request_products import url_products
 
 
 def main():
+    gap = GoldenAppleParse()
     # сбор данных
-    data = gather_data()
+    data = gap.gather_data()
     # подготовка данных для записи
-    products = get_data_product(data)
+    products = gap.get_data_product(data)
+    print(products)
     # запись данных в csv file
-    write_to_csv(products)
+    gap.write_to_csv(products)
 
 
 if __name__ == '__main__':
